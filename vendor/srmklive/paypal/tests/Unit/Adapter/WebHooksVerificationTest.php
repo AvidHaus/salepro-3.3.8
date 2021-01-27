@@ -1,0 +1,31 @@
+<?php
+
+namespace Srmklive\PayPal\Tests\Unit\Adapter;
+
+use PHPUnit\Framework\TestCase;
+use Srmklive\PayPal\Tests\MockClientClasses;
+use Srmklive\PayPal\Tests\MockRequestPayloads;
+use Srmklive\PayPal\Tests\MockResponsePayloads;
+
+class WebHooksVerificationTest extends TestCase
+{
+    use MockClientClasses;
+    use MockRequestPayloads;
+    use MockResponsePayloads;
+
+    /** @test */
+    public function it_can_verify_web_hook_signature()
+    {
+        $expectedResponse = $this->mockVerifyWebHookSignatureResponse();
+
+        $expectedParams = $this->mockVerifyWebHookSignatureParams();
+
+        $expectedMethod = 'verifyWebHook';
+
+        $mockClient = $this->mock_client($expectedResponse, $expectedMethod, $this->getMockCredentials(), true);
+
+        $mockClient->getAccessToken();
+
+        $this->assertEquals($expectedResponse, $mockClient->{$expectedMethod}($expectedParams));
+    }
+}
